@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException
+import functools
+
+from fastapi import FastAPI, HTTPException, Query
 from prometheus_client import Counter, Histogram, generate_latest
 from fastapi.responses import Response
-import time
 
 app = FastAPI(title="Calculator API")
 
@@ -23,52 +24,42 @@ ERROR_COUNT = Counter(
     ["endpoint"]
 )
 
-
 def track_metrics(endpoint_name):
     def decorator(func):
+        @functools.wraps(func)  # <-- Ajoute cette ligne
         async def wrapper(*args, **kwargs):
-            start_time = time.time()
             REQUEST_COUNT.labels(method="GET", endpoint=endpoint_name).inc()
-            try:
-                result = await func(*args, **kwargs)
-                return result
-            except Exception:
-                ERROR_COUNT.labels(endpoint=endpoint_name).inc()
-                raise
-            finally:
-                REQUEST_LATENCY.labels(endpoint=endpoint_name).observe(
-                    time.time() - start_time
-                )
+            with REQUEST_LATENCY.labels(endpoint=endpoint_name).time():
+                try:
+                    return await func(*args, **kwargs)
+                except Exception:
+                    ERROR_COUNT.labels(endpoint=endpoint_name).inc()
+                    raise
         return wrapper
     return decorator
 
-
 @app.get("/add")
 @track_metrics("add")
-async def add(a: float, b: float):
+async def add(a: float = Query(...), b: float = Query(...)):
     return {"operation": "add", "result": a + b}
-
 
 @app.get("/sub")
 @track_metrics("sub")
-async def sub(a: float, b: float):
+async def sub(a: float = Query(...), b: float = Query(...)):
     return {"operation": "sub", "result": a - b}
-
 
 @app.get("/mul")
 @track_metrics("mul")
-async def mul(a: float, b: float):
+async def mul(a: float = Query(...), b: float = Query(...)):
     return {"operation": "mul", "result": a * b}
-
 
 @app.get("/div")
 @track_metrics("div")
-async def div(a: float, b: float):
+async def div(a: float = Query(...), b: float = Query(...)):
     if b == 0:
         ERROR_COUNT.labels(endpoint="div").inc()
         raise HTTPException(status_code=400, detail="Division by zero")
     return {"operation": "div", "result": a / b}
-
 
 @app.get("/metrics")
 def metrics():
