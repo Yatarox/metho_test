@@ -26,7 +26,7 @@ ERROR_COUNT = Counter(
 
 def track_metrics(endpoint_name):
     def decorator(func):
-        @functools.wraps(func)  # <-- Ajoute cette ligne
+        @functools.wraps(func)  
         async def wrapper(*args, **kwargs):
             REQUEST_COUNT.labels(method="GET", endpoint=endpoint_name).inc()
             with REQUEST_LATENCY.labels(endpoint=endpoint_name).time():
