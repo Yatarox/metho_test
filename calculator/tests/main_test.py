@@ -38,6 +38,20 @@ async def test_div_by_zero():
     assert response.json()["detail"] == "Division by zero"
 
 @pytest.mark.asyncio
+async def test_missing_params():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        response = await ac.get("/add?a=2")
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+@pytest.mark.asyncio
+async def test_invalid_params():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        response = await ac.get("/add?a=abc&b=2")
+    assert response.status_code == 422
+    assert "detail" in response.json()
+
+@pytest.mark.asyncio
 async def test_metrics_endpoint():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         response = await ac.get("/metrics")
