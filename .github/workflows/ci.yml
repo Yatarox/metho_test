@@ -9,11 +9,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build Docker image
-        run: docker build -t calculator-api calculator/
-        
+
       - name: Copy code
         uses: actions/checkout@v4
+      
+      - name: Build Docker image
+        run: docker build -t calculator-api calculator/
 
       - name: Setup Python
         uses: actions/setup-python@v5
