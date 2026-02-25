@@ -4,3 +4,4 @@ prometheus-client
 pytest 
 httpx
 pytest-asyncio
+psutil

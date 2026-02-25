@@ -1,0 +1,124 @@
+{
+  "id": null,
+  "title": "Calculator API Metrics",
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 3,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "CPU Usage (%)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "api_cpu_usage_percent",
+          "legendFormat": "CPU"
+        }
+      ],
+      "id": 1,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "lines": true,
+      "linewidth": 2,
+      "points": false
+    },
+    {
+      "type": "graph",
+      "title": "Memory Usage (%)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "api_memory_usage_percent",
+          "legendFormat": "RAM"
+        }
+      ],
+      "id": 2,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "lines": true,
+      "linewidth": 2,
+      "points": false
+    },
+    {
+      "type": "graph",
+      "title": "API Error Rate",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "api_error_rate",
+          "legendFormat": "Error Rate"
+        }
+      ],
+      "id": 3,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+      "lines": true,
+      "linewidth": 2,
+      "points": true,
+      "pointradius": 2
+    },
+    {
+      "type": "graph",
+      "title": "Total API Requests",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (endpoint) (api_requests_total)",
+          "legendFormat": "{{endpoint}}"
+        }
+      ],
+      "id": 4,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 24 },
+      "lines": true,
+      "linewidth": 2,
+      "points": false
+    },
+    {
+      "type": "graph",
+      "title": "Requests per second (RPS)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (endpoint) (rate(api_requests_total[1m]))",
+          "legendFormat": "{{endpoint}}"
+        }
+      ],
+      "id": 7,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 48 },
+      "lines": true,
+      "linewidth": 2,
+      "points": false
+    },
+    {
+      "type": "graph",
+      "title": "API Request Latency (avg, s)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(api_request_latency_seconds_sum[1m]) / rate(api_request_latency_seconds_count[1m])",
+          "legendFormat": "{{endpoint}}"
+        }
+      ],
+      "id": 5,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 32 },
+      "lines": true,
+      "linewidth": 2,
+      "points": true,
+      "pointradius": 2
+    },
+    {
+      "type": "graph",
+      "title": "Total API Errors",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by (endpoint) (api_errors_total)",
+          "legendFormat": "{{endpoint}}"
+        }
+      ],
+      "id": 6,
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 40 },
+      "lines": true,
+      "linewidth": 2,
+      "points": false
+    }
+  ]
+}
