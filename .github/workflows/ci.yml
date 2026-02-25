@@ -20,9 +20,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install fastapi uvicorn prometheus-client pytest httpx
+          pip install -r calculator/requirements.txt
+          pip install pytest-asyncio
 
       - name: Run pytests
         run: |
           export PYTHONPATH=.
           pytest -v
+
+      - name: Build Docker image
+        run: docker build -t calculator-api calculator/

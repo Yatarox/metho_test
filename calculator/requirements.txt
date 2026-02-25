@@ -3,3 +3,4 @@ uvicorn
 prometheus-client
 pytest 
 httpx
+pytest-asyncio
